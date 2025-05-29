@@ -36,7 +36,7 @@ jobs:
         run: npm install
       - name: Install Qase CLI (qasectl)
         run: |
-          curl -L https://github.com/qase-tms/qasectl/releases/latest/download/qasectl_linux_amd64 -o /usr/local/bin/qasectl
+          curl -L https://github.com/qase-tms/qasectl/releases/download/v0.3.3/qasectl-linux-amd64 -o /usr/local/bin/qasectl
           chmod +x /usr/local/bin/qasectl
           qasectl --version
       - name: Set QASE_TESTOPS_RUN_COMPLETE
