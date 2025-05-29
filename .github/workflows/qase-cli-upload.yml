@@ -36,14 +36,17 @@ jobs:
         run: npm install
       - name: Install Qase CLI (qasectl)
         run: |
-          # curl -L https://github.com/qase-tms/qasectl/releases/download/v0.3.3/qasectl-linux-amd64 -o /usr/local/bin/qasectl
-          # chmod +x /usr/local/bin/qasectl
-          # qasectl --help
+          # Install qasectl using Go
           go install github.com/qase-tms/qasectl@latest
-          # Ensure the Go binary path is in PATH
+          # Add Go binary path to current shell session
+          export PATH=$PATH:$HOME/go/bin
+          # Debug: Verify PATH and binary
+          echo "PATH is: $PATH"
+          ls -l $HOME/go/bin/qasectl || echo "qasectl binary not found"
+          # Add to GITHUB_PATH for subsequent steps
           echo "$HOME/go/bin" >> $GITHUB_PATH
           # Verify installation
-          qasectl --help
+          qasectl --help || { echo "qasectl installation failed"; exit 1; }
       - name: Set QASE_TESTOPS_RUN_COMPLETE
         run: |
           # Convert string "1" or "0" to boolean true/false
