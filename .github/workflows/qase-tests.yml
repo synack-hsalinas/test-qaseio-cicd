@@ -26,7 +26,7 @@ env:
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: [self-hosted, node-runner] # Replace with your runner label or 'ubuntu-latest' for GitHub.com
+    runs-on: ubuntu-latest # Replace with your runner label or 'ubuntu-latest' for GitHub.com
     steps:
       - uses: actions/checkout@v3
       - name: Set up Node.js
