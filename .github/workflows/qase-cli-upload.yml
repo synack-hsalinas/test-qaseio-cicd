@@ -11,24 +11,17 @@ on:
       qase_project_code:
         description: "Qase project code"
         required: true
-      qase_run_id:
-        description: "Qase Run ID"
-        required: true
       qase_run_complete:
         description: "Qase Run autocomplete"
         required: true
 env:
   QASE_API_BASE_URL: ${{ inputs.qase_api_base_url }}
   QASE_TESTOPS_PROJECT: ${{ inputs.qase_project_code }}
-  QASE_TESTOPS_RUN_ID: ${{ inputs.qase_run_id }}
-  QASE_TESTOPS_RUN_COMPLETE: ${{ inputs.qase_run_complete }}
   QASE_TESTOPS_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
 jobs:
   test:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     steps:
-      - name: Debug Environment Variables
-        run: env | grep QASE
       - uses: actions/checkout@v3
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -36,6 +29,8 @@ jobs:
           node-version: '18'
       - name: Install Dependencies
         run: npm install
+      - name: Install Qase CLI
+        run: npm install -g @qaseio/qase
       - name: Set QASE_TESTOPS_RUN_COMPLETE
         run: |
           # Convert string "1" or "0" to boolean true/false
@@ -44,15 +39,29 @@ jobs:
           else
             echo "QASE_TESTOPS_RUN_COMPLETE=false" >> $GITHUB_ENV
           fi
+      - name: Create Qase Test Run
+        run: |
+          # Create a new test run and capture the run ID
+          RUN_ID=$(qase run create \
+            --token "$QASE_TESTOPS_API_TOKEN" \
+            --project "$QASE_TESTOPS_PROJECT" \
+            --title "Henrry Automated Test Run $(date +%Y-%m-%d_%H-%M-%S)" \
+            --description "Triggered by GitHub Actions" | jq -r '.data.id')
+          echo "QASE_TESTOPS_RUN_ID=$RUN_ID" >> $GITHUB_ENV
       - name: Run Tests
-        run: QASE_MODE=testops npm test
-      - name: Push Results to Qase
+        run: npm test
+      - name: Upload JUnit XML to Qase
         if: always()
         env:
           QASE_REPORT: ${{ inputs.qase_report }}
         run: |
-          # Results are pushed by jest-qase-reporter during test execution
-          echo "Results pushed to Qase via jest-qase-reporter"
+          qase run \
+            --token "$QASE_TESTOPS_API_TOKEN" \
+            --project "$QASE_TESTOPS_PROJECT" \
+            --run "$QASE_TESTOPS_RUN_ID" \
+            --complete-run "$QASE_TESTOPS_RUN_COMPLETE" \
+            --file reports/junit.xml \
+            --format junit
       - name: Upload JUnit Artifact
         if: always()
         uses: actions/upload-artifact@v4
