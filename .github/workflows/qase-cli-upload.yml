@@ -50,7 +50,7 @@ jobs:
       - name: Create Qase Test Run
         run: |
           RUN_TITLE="CLI Automated Run $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-          RESPONSE=$(qasectl run create \
+          RESPONSE=$(qasectl testops run create \
             --project "$QASE_TESTOPS_PROJECT" \
             --token "$QASE_TESTOPS_API_TOKEN" \
             --title "$RUN_TITLE" \
@@ -69,7 +69,7 @@ jobs:
         env:
           QASE_REPORT: ${{ inputs.qase_report }}
         run: |
-          qasectl result upload \
+          qasectl testops result upload \
             --token "$QASE_TESTOPS_API_TOKEN" \
             --project "$QASE_TESTOPS_PROJECT" \
             --id "$QASE_TESTOPS_RUN_ID" \
