@@ -1,4 +1,4 @@
-name: Qase Jest Tests
+name: Qase Jest Tests - CLI Upload
 on:
   workflow_dispatch:
     inputs:

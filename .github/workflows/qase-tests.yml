@@ -1,4 +1,4 @@
-name: Qase Jest Tests
+name: Qase Jest Tests - Jest-Qase-Reporter
 on:
   workflow_dispatch:
     inputs:
