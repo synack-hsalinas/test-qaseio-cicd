@@ -39,7 +39,11 @@ jobs:
           # curl -L https://github.com/qase-tms/qasectl/releases/download/v0.3.3/qasectl-linux-amd64 -o /usr/local/bin/qasectl
           # chmod +x /usr/local/bin/qasectl
           # qasectl --help
-          go help
+          go install github.com/qase-tms/qasectl@latest
+          # Ensure the Go binary path is in PATH
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+          # Verify installation
+          qasectl --help
       - name: Set QASE_TESTOPS_RUN_COMPLETE
         run: |
           # Convert string "1" or "0" to boolean true/false
