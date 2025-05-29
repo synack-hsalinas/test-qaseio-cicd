@@ -37,6 +37,14 @@ jobs:
           node-version: '18'
       - name: Install Dependencies
         run: npm install
+      - name: Set QASE_TESTOPS_RUN_COMPLETE
+        run: |
+          # Convert string "1" or "0" to boolean true/false
+          if [ "${{ inputs.qase_run_complete }}" = "1" ]; then
+            echo "QASE_TESTOPS_RUN_COMPLETE=true" >> $GITHUB_ENV
+          else
+            echo "QASE_TESTOPS_RUN_COMPLETE=false" >> $GITHUB_ENV
+          fi
       - name: Run Tests
         run: npm test
       - name: Push Results to Qase
