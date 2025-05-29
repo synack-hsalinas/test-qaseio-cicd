@@ -5,15 +5,20 @@ on:
       qase_api_base_url:
         description: "Qase API URL"
         required: true
+        default: "https://app.qase.io/api/v1"
       qase_report:
         description: "Enabled/disabled reporting to Qase"
         required: true
+        type: boolean
       qase_project_code:
         description: "Qase project code"
         required: true
+        default: "DEMO"
       qase_run_complete:
         description: "Qase Run autocomplete"
         required: true
+        default: true
+        type: boolean
 env:
   QASE_API_BASE_URL: ${{ inputs.qase_api_base_url }}
   QASE_TESTOPS_PROJECT: ${{ inputs.qase_project_code }}
