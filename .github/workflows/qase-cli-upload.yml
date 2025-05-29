@@ -82,6 +82,13 @@ jobs:
             --id "$QASE_TESTOPS_RUN_ID" \
             --path reports/junit.xml \
             --format junit
+      - name: Complete Qase Test Run
+        if: always() && env.QASE_TESTOPS_RUN_COMPLETE == 'true'
+        run: |
+          qasectl testops run complete \
+            --token "$QASE_TESTOPS_API_TOKEN" \
+            --project "$QASE_TESTOPS_PROJECT" \
+            --id "$QASE_TESTOPS_RUN_ID"
       - name: Upload JUnit Artifact
         if: always()
         uses: actions/upload-artifact@v4
