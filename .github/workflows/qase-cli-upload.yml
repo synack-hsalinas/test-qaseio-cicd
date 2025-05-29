@@ -54,8 +54,7 @@ jobs:
             --project "$QASE_TESTOPS_PROJECT" \
             --token "$QASE_TESTOPS_API_TOKEN" \
             --title "$RUN_TITLE" \
-            --description "Automated test run from GitHub Actions" \
-            --environment "Production")
+            --description "Automated test run from GitHub Actions")
           RUN_ID=$(echo "$RESPONSE" | grep -oP 'Run ID: \K\d+')
           if [ -z "$RUN_ID" ]; then
             echo "Error: Failed to create test run"
