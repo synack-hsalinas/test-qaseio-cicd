@@ -34,8 +34,11 @@ jobs:
           node-version: '18'
       - name: Install Dependencies
         run: npm install
-      - name: Install Qase CLI
-        run: npm install -g @qaseio/qase
+      - name: Install Qase CLI (qasectl)
+        run: |
+          curl -L https://github.com/qase-tms/qasectl/releases/latest/download/qasectl_linux_amd64 -o /usr/local/bin/qasectl
+          chmod +x /usr/local/bin/qasectl
+          qasectl --version
       - name: Set QASE_TESTOPS_RUN_COMPLETE
         run: |
           # Convert string "1" or "0" to boolean true/false
@@ -46,12 +49,18 @@ jobs:
           fi
       - name: Create Qase Test Run
         run: |
-          # Create a new test run and capture the run ID
-          RUN_ID=$(qase run create \
-            --token "$QASE_TESTOPS_API_TOKEN" \
+          RUN_TITLE="CLI Automated Run $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          RESPONSE=$(qasectl run create \
             --project "$QASE_TESTOPS_PROJECT" \
-            --title "Henrry Automated Test Run $(date +%Y-%m-%d_%H-%M-%S)" \
-            --description "Triggered by GitHub Actions" | jq -r '.data.id')
+            --token "$QASE_TESTOPS_API_TOKEN" \
+            --title "$RUN_TITLE" \
+            --description "Automated test run from GitHub Actions" \
+            --environment "Production")
+          RUN_ID=$(echo "$RESPONSE" | grep -oP 'Run ID: \K\d+')
+          if [ -z "$RUN_ID" ]; then
+            echo "Error: Failed to create test run"
+            exit 1
+          fi
           echo "QASE_TESTOPS_RUN_ID=$RUN_ID" >> $GITHUB_ENV
       - name: Run Tests
         run: npm test
@@ -60,13 +69,13 @@ jobs:
         env:
           QASE_REPORT: ${{ inputs.qase_report }}
         run: |
-          qase run \
+          qasectl result upload \
             --token "$QASE_TESTOPS_API_TOKEN" \
             --project "$QASE_TESTOPS_PROJECT" \
-            --run "$QASE_TESTOPS_RUN_ID" \
-            --complete-run "$QASE_TESTOPS_RUN_COMPLETE" \
+            --id "$QASE_TESTOPS_RUN_ID" \
+            --complete="$QASE_TESTOPS_RUN_COMPLETE" \
             --file reports/junit.xml \
-            --format junit
+            --format JUNIT
       - name: Upload JUnit Artifact
         if: always()
         uses: actions/upload-artifact@v4
