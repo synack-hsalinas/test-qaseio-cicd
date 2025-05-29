@@ -46,7 +46,7 @@ jobs:
             echo "QASE_TESTOPS_RUN_COMPLETE=false" >> $GITHUB_ENV
           fi
       - name: Run Tests
-        run: npm test
+        run: QASE_MODE=testops npm test
       - name: Push Results to Qase
         if: always()
         env:
