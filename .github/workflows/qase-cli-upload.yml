@@ -80,9 +80,8 @@ jobs:
             --token "$QASE_TESTOPS_API_TOKEN" \
             --project "$QASE_TESTOPS_PROJECT" \
             --id "$QASE_TESTOPS_RUN_ID" \
-            --complete="$QASE_TESTOPS_RUN_COMPLETE" \
-            --file reports/junit.xml \
-            --format JUNIT
+            --path reports/junit.xml \
+            --format junit
       - name: Upload JUnit Artifact
         if: always()
         uses: actions/upload-artifact@v4
