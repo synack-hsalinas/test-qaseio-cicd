@@ -1,0 +1,46 @@
+name: Qase Jest Tests
+on:
+  workflow_dispatch:
+    inputs:
+      qase_api_base_url:
+        description: "Qase API URL"
+        required: true
+      qase_report:
+        description: "Enabled/disabled reporting to Qase"
+        required: true
+      qase_project_code:
+        description: "Qase project code"
+        required: true
+      qase_run_id:
+        description: "Qase Run ID"
+        required: true
+      qase_run_complete:
+        description: "Qase Run autocomplete"
+        required: true
+env:
+  QASE_API_BASE_URL: ${{ inputs.qase_api_base_url }}
+  QASE_TESTOPS_PROJECT: ${{ inputs.qase_project_code }}
+  QASE_TESTOPS_RUN_ID: ${{ inputs.qase_run_id }}
+  QASE_TESTOPS_RUN_COMPLETE: ${{ inputs.qase_run_complete }}
+  QASE_TESTOPS_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: [self-hosted, node-runner] # Replace with your runner label or 'ubuntu-latest' for GitHub.com
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Tests
+        run: npm test
+      - name: Push Results to Qase
+        if: always()
+        env:
+          QASE_REPORT: ${{ inputs.qase_report }}
+        run: |
+          # Results are pushed by jest-qase-reporter during test execution
+          echo "Results pushed to Qase via jest-qase-reporter"
