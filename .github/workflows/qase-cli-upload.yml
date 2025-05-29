@@ -36,9 +36,10 @@ jobs:
         run: npm install
       - name: Install Qase CLI (qasectl)
         run: |
-          curl -L https://github.com/qase-tms/qasectl/releases/download/v0.3.3/qasectl-linux-amd64 -o /usr/local/bin/qasectl
-          chmod +x /usr/local/bin/qasectl
-          qasectl --help
+          # curl -L https://github.com/qase-tms/qasectl/releases/download/v0.3.3/qasectl-linux-amd64 -o /usr/local/bin/qasectl
+          # chmod +x /usr/local/bin/qasectl
+          # qasectl --help
+          go help
       - name: Set QASE_TESTOPS_RUN_COMPLETE
         run: |
           # Convert string "1" or "0" to boolean true/false
