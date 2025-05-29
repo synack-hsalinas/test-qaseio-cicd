@@ -62,7 +62,8 @@ jobs:
             --project "$QASE_TESTOPS_PROJECT" \
             --token "$QASE_TESTOPS_API_TOKEN" \
             --title "$RUN_TITLE")
-          RUN_ID=$(echo "$RESPONSE" | grep -oP 'Run ID: \K\d+')
+          echo "RESPONSE: $RESPONSE"
+          RUN_ID=$(echo "$RESPONSE" | grep -oP 'Run created with ID: \K\d+')
           if [ -z "$RUN_ID" ]; then
             echo "Error: Failed to create test run"
             exit 1
