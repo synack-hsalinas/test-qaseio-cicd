@@ -83,7 +83,7 @@ jobs:
             --path reports/junit.xml \
             --format junit
       - name: Complete Qase Test Run
-        if: always() && env.QASE_TESTOPS_RUN_COMPLETE == 'true'
+        if: always() && inputs.qase_run_complete == 'true'
         run: |
           qasectl testops run complete \
             --token "$QASE_TESTOPS_API_TOKEN" \
