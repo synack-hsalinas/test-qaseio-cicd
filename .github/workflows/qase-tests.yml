@@ -28,6 +28,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest # Replace with your runner label or 'ubuntu-latest' for GitHub.com
     steps:
+      - name: Debug Environment Variables
+        run: env | grep QASE
       - uses: actions/checkout@v3
       - name: Set up Node.js
         uses: actions/setup-node@v3
