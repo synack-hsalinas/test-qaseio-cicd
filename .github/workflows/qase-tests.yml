@@ -20,8 +20,8 @@ on:
       qase_run_complete:
         description: "Qase Run autocomplete"
         required: true
-        default: true
-        type: boolean
+        #default: true
+        #type: boolean # NOTE: this param is sent as 1 or 0 from Qase integration opposed to boolean true/false
 env:
   QASE_API_BASE_URL: ${{ inputs.qase_api_base_url }}
   QASE_TESTOPS_PROJECT: ${{ inputs.qase_project_code }}
