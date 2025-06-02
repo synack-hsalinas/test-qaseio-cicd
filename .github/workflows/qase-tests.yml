@@ -5,23 +5,18 @@ on:
       qase_api_base_url:
         description: "Qase API URL"
         required: true
-        default: "https://app.qase.io/api/v1"
       qase_report:
         description: "Enabled/disabled reporting to Qase"
         required: true
-        type: boolean
       qase_project_code:
         description: "Qase project code"
         required: true
-        default: "DEMO"
       qase_run_id:
         description: "Qase Run ID"
         required: true
       qase_run_complete:
         description: "Qase Run autocomplete"
         required: true
-        #default: true
-        #type: boolean # NOTE: this param is sent as 1 or 0 from Qase integration opposed to boolean true/false
 env:
   QASE_API_BASE_URL: ${{ inputs.qase_api_base_url }}
   QASE_TESTOPS_PROJECT: ${{ inputs.qase_project_code }}
@@ -30,7 +25,8 @@ env:
   QASE_TESTOPS_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
 jobs:
   test:
-    runs-on: ubuntu-latest 
+    timeout-minutes: 60
+    runs-on: ubuntu-latest # Replace with your runner label or 'ubuntu-latest' for GitHub.com
     steps:
       - name: Debug Environment Variables
         run: env | grep QASE
@@ -51,13 +47,6 @@ jobs:
           fi
       - name: Run Tests
         run: QASE_MODE=testops npm test
-      - name: Push Results to Qase
-        if: always()
-        env:
-          QASE_REPORT: ${{ inputs.qase_report }}
-        run: |
-          # Results are pushed by jest-qase-reporter during test execution
-          echo "Results pushed to Qase via jest-qase-reporter"
       - name: Upload JUnit Artifact
         if: always()
         uses: actions/upload-artifact@v4
